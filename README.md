@@ -2,7 +2,7 @@
 
 ## Contents of each file:
 
-### data_preprocess2021feb.ipynb
+### data_preprocess2021mar.ipynb
 Loading and preprocessing input data. This file includes also 2D U-Net model, which is there just to predict images with already pretrained weights. After this prediction, slices of predicted images can be saved.
 
 ### server_code_model2.py
