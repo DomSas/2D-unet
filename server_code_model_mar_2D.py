@@ -20,6 +20,11 @@ img_cols = int(192)
 smooth = 1.
 
 
+# Values for Combo loss
+e = K.epsilon()
+ALPHA = 0.5 # < 0.5 penalises FP more, > 0.5 penalises FN more
+CE_RATIO = 0.5 #weighted contribution of modified CE loss compared to Dice loss
+
 
 def dice_coef(y_true, y_pred):
     y_true_f = K.flatten(y_true)
@@ -33,28 +38,16 @@ def dice_coef_loss(y_true, y_pred):
 
 
 def Combo_loss(targets, inputs):
-    # Keras
-    ALPHA = 0.5  # < 0.5 penalises FP more, > 0.5 penalises FN more
-    CE_RATIO = 0.5  # weighted contribution of modified CE loss compared to Dice loss
-    e = K.epsilon()
-    smooth = 1
-    '''
-    ce_w values smaller than 0.5 penalize false positives more while values larger than 0.5 penalize false negatives more
-    ce_d_w is level of contribution of the cross-entropy loss in the total loss.
-    '''
-
     targets = K.flatten(targets)
     inputs = K.flatten(inputs)
-
+    
     intersection = K.sum(targets * inputs)
-    dice = (2. * intersection + smooth) / \
-        (K.sum(targets) + K.sum(inputs) + smooth)
+    dice = (2. * intersection + smooth) / (K.sum(targets) + K.sum(inputs) + smooth)
     inputs = K.clip(inputs, e, 1.0 - e)
-    out = - (ALPHA * ((targets * K.log(inputs)) +
-                      ((1 - ALPHA)(1.0 - targets) * K.log(1.0 - inputs))))
+    out = - (ALPHA * ((targets * K.log(inputs)) + ((1 - ALPHA) * (1.0 - targets) * K.log(1.0 - inputs))))
     weighted_ce = K.mean(out, axis=-1)
-    combo = 1 + (CE_RATIO * weighted_ce) - ((1 - CE_RATIO) * dice)
-
+    combo = (CE_RATIO * weighted_ce) - ((1 - CE_RATIO) * dice)
+    
     return combo
 
 
