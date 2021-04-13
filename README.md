@@ -2,6 +2,9 @@
 
 ## Contents of each file:
 
+### u-net_augmentation1.py
+Contains code to train with generator that generates augmented samples with Albumentations library. Code is based on <https://github.com/mjkvaak/ImageDataAugmentor>
+
 ### data_preprocess2021mar.ipynb
 Loading and preprocessing input data. This file includes also 2D U-Net model, which is there just to predict images with already pretrained weights. After this prediction, slices of predicted images can be saved.
 
