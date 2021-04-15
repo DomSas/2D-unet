@@ -129,7 +129,7 @@ img_data_gen = ImageDataAugmentor(
 mask_data_gen = ImageDataAugmentor(
     augment=albumentation_combo, 
     input_augment_mode='mask', #<- notice the different augment mode
-    preprocess_input=one_hot_encode_masks,
+#    preprocess_input=one_hot_encode_masks,
     validation_split=0.2,
     seed=SEED,
 )
@@ -176,7 +176,8 @@ model.fit(
   steps_per_epoch=180, # number of slices (192*30 = 6720) / batch size (32)
   epochs=50,
   validation_data=validation_generator,
-  validation_steps=30
+  validation_steps=30,
+  callbacks=[my_callbacks]
 )
 
 
